@@ -72,7 +72,7 @@ class NewEventDialog: AppCompatDialogFragment(), DatePickerDialog.OnDateSetListe
                 ) { dialogInterface, i ->
                     val eventTitle: String = title.text.toString()
                     val eventDescription: String = descripton.text.toString()
-                    
+
                     val eventDate: LocalDateTime = LocalDateTime.parse("${savedYear}-${savedMonth}-${savedDay}T${savedHour}:${savedMinute}:00")
                     listener.applyNewEvent(eventDate, eventTitle,eventDescription)
 

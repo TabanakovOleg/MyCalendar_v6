@@ -8,7 +8,7 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 
 class RecyclerViewAdapter(private var exampleList: ArrayList<Event>,
-                          private val listener: MainActivity
+                          private val listener: OnItemClickListener
                           ): RecyclerView.Adapter<RecyclerViewAdapter.MyViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MyViewHolder {
@@ -52,13 +52,15 @@ class RecyclerViewAdapter(private var exampleList: ArrayList<Event>,
 
 
         override fun onClick(v: View?) {
-
             val position = adapterPosition
-
             if(position != RecyclerView.NO_POSITION) {
-                /*itemView.setBackgroundColor(Color.BLUE)*/
-                /*listener.onItemClick(position)*/
+                listener.onItemClick(position)
 
+
+            /*val position = adapterPosition
+            if(position != RecyclerView.NO_POSITION) {
+                *//*itemView.setBackgroundColor(Color.BLUE)*//*
+                *//*listener.onItemClick(position)*/
             }
         }
     }

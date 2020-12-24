@@ -19,7 +19,7 @@ import java.time.LocalDateTime
 lateinit var recyclerView: RecyclerView
 
 
-class MainActivity : AppCompatActivity(), NewEventDialog.NewEventDialogListener {
+class MainActivity : AppCompatActivity(), NewEventDialog.NewEventDialogListener, RecyclerViewAdapter.OnItemClickListener {
 
     lateinit var calendarView: CalendarView
     var ourList = arrayListOf<Event>()
@@ -35,6 +35,7 @@ class MainActivity : AppCompatActivity(), NewEventDialog.NewEventDialogListener 
     val list24 = arrayListOf(e3)
     val allEvents = sortedSetOf(e1,e3,e2)
 
+    @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreate(savedInstanceState: Bundle?) {
 
         super.onCreate(savedInstanceState)
@@ -50,10 +51,10 @@ class MainActivity : AppCompatActivity(), NewEventDialog.NewEventDialogListener 
             override fun onSelectedDayChange(view: CalendarView, year: Int, month: Int, dayOfMonth: Int) {
                 ourList.clear()
                 val date: String = "$year-$month-$dayOfMonth"
-                allEvents.forEach{ if(it.date.toString().contains(date)){
+                allEvents.forEach{ if(it.date.year == year){
                     ourList.add(it)
                 } }
-                (recyclerView.adapter as RecyclerViewAdapter).updateList(ourList as ArrayList<Event>)
+                (recyclerView.adapter as RecyclerViewAdapter).updateList(ourList)
                 (recyclerView.adapter as RecyclerViewAdapter).notifyDataSetChanged()
             }
         })
@@ -94,8 +95,17 @@ class MainActivity : AppCompatActivity(), NewEventDialog.NewEventDialogListener 
 
 
 
+    @RequiresApi(Build.VERSION_CODES.O)
     fun showFutureEvents(){
-        val listOfFutureEvents: List<Event>
+        var listOfFutureEvents = mutableListOf<Event>()
+        allEvents.forEach{ if(it.date > LocalDateTime.now()){
+            listOfFutureEvents.add(it)
+        } }
+        (recyclerView.adapter as RecyclerViewAdapter).updateList(listOfFutureEvents as ArrayList<Event>)
+        (recyclerView.adapter as RecyclerViewAdapter).notifyDataSetChanged()
+    }
 
+    override fun onItemClick(position: Int) {
+        Toast.makeText(this,"Item $position clicked", Toast.LENGTH_LONG).show()
     }
 }
