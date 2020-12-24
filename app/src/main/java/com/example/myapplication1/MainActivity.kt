@@ -51,7 +51,7 @@ class MainActivity : AppCompatActivity(), NewEventDialog.NewEventDialogListener,
             override fun onSelectedDayChange(view: CalendarView, year: Int, month: Int, dayOfMonth: Int) {
                 ourList.clear()
                 val date: String = "$year-$month-$dayOfMonth"
-                allEvents.forEach{ if(it.date.year == year){
+                allEvents.forEach{ if(it.date.year == year && it.date.monthValue == month && it.date.dayOfMonth == dayOfMonth){
                     ourList.add(it)
                 } }
                 (recyclerView.adapter as RecyclerViewAdapter).updateList(ourList)
