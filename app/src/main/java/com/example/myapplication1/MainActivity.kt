@@ -25,11 +25,11 @@ class MainActivity : AppCompatActivity(), NewEventDialog.NewEventDialogListener,
     var ourList = arrayListOf<Event>()
 
     @RequiresApi(Build.VERSION_CODES.O)
-    val e1 = Event(LocalDateTime.parse("2020-11-23T11:00:00"), "Event of 23.1", "ooo")
+    val e1 = Event(LocalDateTime.parse("2020-12-23T11:00:00"), "Event of 23.1", "ooo")
     @RequiresApi(Build.VERSION_CODES.O)
-    val e2 = Event(LocalDateTime.parse("2020-11-23T13:00:00"), "Event of 23.2", "ooo")
+    val e2 = Event(LocalDateTime.parse("2020-12-23T13:00:00"), "Event of 23.2", "ooo")
     @RequiresApi(Build.VERSION_CODES.O)
-    val e3 = Event(LocalDateTime.parse("2020-11-24T13:00:00"), "Event of 24.1", "ooo")
+    val e3 = Event(LocalDateTime.parse("2020-12-24T13:00:00"), "Event of 24.1", "ooo")
 
     val list23 = arrayListOf(e1,e2)
     val list24 = arrayListOf(e3)
@@ -50,8 +50,7 @@ class MainActivity : AppCompatActivity(), NewEventDialog.NewEventDialogListener,
         calendarView.setOnDateChangeListener(object : OnDateChangeListener {
             override fun onSelectedDayChange(view: CalendarView, year: Int, month: Int, dayOfMonth: Int) {
                 ourList.clear()
-                val date: String = "$year-$month-$dayOfMonth"
-                allEvents.forEach{ if(it.date.year == year && it.date.monthValue == month && it.date.dayOfMonth == dayOfMonth){
+                allEvents.forEach{ if(it.date.year == year && it.date.monthValue - 1 == month && it.date.dayOfMonth == dayOfMonth){
                     ourList.add(it)
                 } }
                 (recyclerView.adapter as RecyclerViewAdapter).updateList(ourList)
@@ -77,14 +76,13 @@ class MainActivity : AppCompatActivity(), NewEventDialog.NewEventDialogListener,
 
     @RequiresApi(Build.VERSION_CODES.O)
     override fun applyNewEvent(date: LocalDateTime, title: String, description: String) {
-
         if(title != "" && description != "") {
             try {
                 val newEvent = Event(date, title, description)
                 Toast.makeText(this, newEvent.toString(), Toast.LENGTH_SHORT).show()
                 allEvents.add(newEvent)
                 (recyclerView.adapter as RecyclerViewAdapter).notifyDataSetChanged()
-                /*recyclerView.adapter?.notifyItemInserted(0)*/
+//                recyclerView.adapter?.notifyItemInserted(0)
             } catch (e: Exception) {
                 Toast.makeText(this, "Something wrong", Toast.LENGTH_SHORT).show()
             }
@@ -92,8 +90,6 @@ class MainActivity : AppCompatActivity(), NewEventDialog.NewEventDialogListener,
         else
             Toast.makeText(this, "Something wrong", Toast.LENGTH_SHORT).show()
     }
-
-
 
     @RequiresApi(Build.VERSION_CODES.O)
     fun showFutureEvents(){

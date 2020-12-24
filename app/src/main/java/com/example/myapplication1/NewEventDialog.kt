@@ -72,10 +72,18 @@ class NewEventDialog: AppCompatDialogFragment(), DatePickerDialog.OnDateSetListe
                 ) { dialogInterface, i ->
                     val eventTitle: String = title.text.toString()
                     val eventDescription: String = descripton.text.toString()
-
-                    val eventDate: LocalDateTime = LocalDateTime.parse("${savedYear}-${savedMonth}-${savedDay}T${savedHour}:${savedMinute}:00")
+                    var eventDateString: String = "$savedYear-"
+                    savedMonth += 1
+                    if (savedMonth < 10) eventDateString += "0"
+                    eventDateString += "$savedMonth-"
+                    if (savedDay < 10) eventDateString += "0"
+                    eventDateString += "${savedDay}T"
+                    if (savedHour < 10) eventDateString += "0"
+                    eventDateString += "$savedHour:"
+                    if (savedMinute < 10) eventDateString += "0"
+                    eventDateString += "$savedMinute:00"
+                    val eventDate: LocalDateTime = LocalDateTime.parse(eventDateString)
                     listener.applyNewEvent(eventDate, eventTitle,eventDescription)
-
                 }
 
         button = view.findViewById(R.id.date_picker)
