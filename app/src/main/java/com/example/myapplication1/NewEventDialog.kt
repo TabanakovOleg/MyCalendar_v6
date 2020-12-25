@@ -16,6 +16,7 @@ import androidx.appcompat.app.AppCompatDialogFragment
 import java.sql.Time
 import java.time.LocalDate
 import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
 import java.util.*
 
 class NewEventDialog(val selectedDate: LocalDateTime): AppCompatDialogFragment(), DatePickerDialog.OnDateSetListener, TimePickerDialog.OnTimeSetListener{
@@ -25,9 +26,6 @@ class NewEventDialog(val selectedDate: LocalDateTime): AppCompatDialogFragment()
     private lateinit var time: TextView
     private lateinit var button: Button
 
-    var day = 0
-    var month = 0
-    var year = 0
     var hour = 0
     var minute = 0
 
@@ -66,31 +64,39 @@ class NewEventDialog(val selectedDate: LocalDateTime): AppCompatDialogFragment()
                 ) { dialogInterface, i ->
                     val eventTitle: String = title.text.toString()
                     val eventDescription: String = descripton.text.toString()
-                    var eventDateString: String = "$savedYear-"
-                    savedMonth += 1
-                    if (savedMonth < 10) eventDateString += "0"
-                    eventDateString += "$savedMonth-"
-                    if (savedDay < 10) eventDateString += "0"
-                    eventDateString += "${savedDay}T"
-                    if (savedHour < 10) eventDateString += "0"
-                    eventDateString += "$savedHour:"
-                    if (savedMinute < 10) eventDateString += "0"
-                    eventDateString += "$savedMinute:00"
+
+                    var eventDateString: String
+                    if (savedYear == 0) {
+                        eventDateString = selectedDate.format(DateTimeFormatter.ofPattern("yyyy-MM-dd"))
+                        eventDateString += "T10:00:00"
+                    } else {
+                        eventDateString = "$savedYear-"
+                        savedMonth += 1
+                        if (savedMonth < 10) eventDateString += "0"
+                        eventDateString += "$savedMonth-"
+                        if (savedDay < 10) eventDateString += "0"
+                        eventDateString += "${savedDay}T"
+                        if (savedHour < 10) eventDateString += "0"
+                        eventDateString += "$savedHour:"
+                        if (savedMinute < 10) eventDateString += "0"
+                        eventDateString += "$savedMinute:00"
+                    }
+
                     val eventDate: LocalDateTime = LocalDateTime.parse(eventDateString)
                     listener.applyNewEvent(eventDate, eventTitle,eventDescription)
-
                 }
 
         button = view.findViewById(R.id.date_picker)
         button.setOnClickListener{
-            getDateTimeCalendar()
-
-            DatePickerDialog(this.context!!,this, year, month, day).show()
+            DatePickerDialog(this.context!!,this, selectedDate.year, selectedDate.monthValue - 1, selectedDate.dayOfMonth).show()
         }
         title = view.findViewById(R.id.title)
         descripton = view.findViewById(R.id.description)
         date = view.findViewById(R.id.picked_date)
         time = view.findViewById(R.id.picked_time)
+
+        val dateText: String = selectedDate.format(DateTimeFormatter.ofPattern("yyyy/MM/dd"))
+        date.text = dateText
 
         return  builder.create()
     }
@@ -101,9 +107,6 @@ class NewEventDialog(val selectedDate: LocalDateTime): AppCompatDialogFragment()
 
     private fun getDateTimeCalendar(){
         val cal = Calendar.getInstance()
-        day = cal.get(Calendar.DAY_OF_MONTH)
-        month= cal.get(Calendar.MONTH)
-        year = cal.get(Calendar.YEAR)
         hour = cal.get(Calendar.HOUR)
         minute = cal.get(Calendar.MINUTE)
     }
@@ -123,10 +126,19 @@ class NewEventDialog(val selectedDate: LocalDateTime): AppCompatDialogFragment()
         savedHour = hourOfDay
         savedMinute = minute
 
+        var dateText = "Date: $savedYear/"
+        if (savedMonth < 9) dateText += "0"
+        dateText += "${savedMonth + 1}/"
+        if (savedDay < 10) dateText += "0"
+        dateText += savedDay
+        date.text = dateText
 
-        date.text = "Date: $savedDay/${savedMonth+1}/$savedYear"
-        time.text = "Begin at: " + savedHour +":" + savedMinute
+
+        var timeText = "Begin at: "
+        if (savedHour < 10) timeText += "0"
+        timeText += "$savedHour:"
+        if (savedMinute < 10) timeText += "0"
+        timeText += "$savedMinute"
+        time.text = timeText
     }
-
-
 }

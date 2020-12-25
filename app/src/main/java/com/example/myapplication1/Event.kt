@@ -14,6 +14,7 @@ class Event(val date: LocalDateTime, val title: String, val description:String):
     override operator fun compareTo(other: Event): Int {
         if (this.date > other.date) return 1
         if (this.date < other.date) return -1
-        return 0
+        if (this.title == other.title && this.date == other.date) return 0
+        return 1
     }
 }
