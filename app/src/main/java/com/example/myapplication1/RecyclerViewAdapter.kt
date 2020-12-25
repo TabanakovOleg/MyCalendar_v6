@@ -30,6 +30,10 @@ class RecyclerViewAdapter(private var exampleList: ArrayList<Event>,
 
     }
 
+    fun getItem(pos: Int): Event{
+        return exampleList.get(pos)
+    }
+
     fun deleteItem(pos:Int){
         exampleList.removeAt(pos)
         notifyItemRemoved(pos)

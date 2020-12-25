@@ -11,6 +11,7 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.get
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.floatingactionbutton.FloatingActionButton
@@ -71,6 +72,7 @@ class MainActivity : AppCompatActivity(), NewEventDialog.NewEventDialogListener,
                     ourList.add(it)
                 } }
                 (recyclerView.adapter as RecyclerViewAdapter).updateList(ourList)
+
                 (recyclerView.adapter as RecyclerViewAdapter).notifyDataSetChanged()
                 showingFutureEvents = false
 
@@ -97,6 +99,10 @@ class MainActivity : AppCompatActivity(), NewEventDialog.NewEventDialogListener,
     fun openDialog(){
         val newEventDialog = NewEventDialog(selectedDate)
         newEventDialog.show(supportFragmentManager, "New event")
+    }
+
+    fun openEventInformationDialog(pickedEvent: Event){
+        Toast.makeText(this,"Item ${pickedEvent.title} clicked", Toast.LENGTH_LONG).show()
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
@@ -156,6 +162,9 @@ class MainActivity : AppCompatActivity(), NewEventDialog.NewEventDialogListener,
     }
 
     override fun onItemClick(position: Int) {
+
+        openEventInformationDialog((recyclerView.adapter as RecyclerViewAdapter).getItem(position))
+
         Toast.makeText(this,"Item $position clicked", Toast.LENGTH_LONG).show()
     }
 }
