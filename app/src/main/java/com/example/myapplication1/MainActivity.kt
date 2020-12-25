@@ -19,7 +19,6 @@ import java.time.LocalDateTime
 
 lateinit var recyclerView: RecyclerView
 
-
 class MainActivity : AppCompatActivity(), NewEventDialog.NewEventDialogListener, RecyclerViewAdapter.OnItemClickListener {
 
     lateinit var calendarView: CalendarView
@@ -51,6 +50,15 @@ class MainActivity : AppCompatActivity(), NewEventDialog.NewEventDialogListener,
 
         calendarView.setOnDateChangeListener(object : OnDateChangeListener {
             override fun onSelectedDayChange(view: CalendarView, year: Int, month: Int, dayOfMonth: Int) {
+                var eventDateString: String = "Events of the $dayOfMonth"
+                if ((4 <= dayOfMonth && dayOfMonth <= 20) || (24 <= dayOfMonth && dayOfMonth <= 30))
+                    eventDateString += "th"
+                else if (dayOfMonth % 10 == 1) eventDateString += "st"
+                else if (dayOfMonth % 10 == 2) eventDateString += "nd"
+                else if (dayOfMonth % 10 == 3) eventDateString += "rd"
+                eventDateString += " of " + getMonthName(month)
+                val title: TextView = findViewById(R.id.textView)
+                title.text = eventDateString
                 ourList.clear()
                 allEvents.forEach{ if(it.date.year == year && it.date.monthValue - 1 == month && it.date.dayOfMonth == dayOfMonth){
                     ourList.add(it)
@@ -68,7 +76,6 @@ class MainActivity : AppCompatActivity(), NewEventDialog.NewEventDialogListener,
         var showFutureEvents: Button = findViewById(R.id.show_all_events)
         showFutureEvents.setOnClickListener{
             showFutureEvents()
-
         }
     }
 
