@@ -1,6 +1,7 @@
 package com.example.myapplication1
 
 import Event
+import android.annotation.SuppressLint
 import android.os.Build
 import android.os.Bundle
 import android.widget.Button
@@ -15,6 +16,8 @@ import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import java.time.LocalDate
 import java.time.LocalDateTime
+import java.util.*
+import kotlin.collections.ArrayList
 
 
 lateinit var recyclerView: RecyclerView
@@ -23,6 +26,10 @@ class MainActivity : AppCompatActivity(), NewEventDialog.NewEventDialogListener,
 
     lateinit var calendarView: CalendarView
     var ourList = arrayListOf<Event>()
+
+    @RequiresApi(Build.VERSION_CODES.O)
+    var selectedDate = LocalDateTime.now()
+    var showingFutureEvents: Boolean = true
 
     @RequiresApi(Build.VERSION_CODES.O)
     val e1 = Event(LocalDateTime.parse("2020-12-23T11:00:00"), "Event of 23.1", "ooo")
@@ -37,8 +44,8 @@ class MainActivity : AppCompatActivity(), NewEventDialog.NewEventDialogListener,
 
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreate(savedInstanceState: Bundle?) {
-
         super.onCreate(savedInstanceState)
+
         setContentView(R.layout.activity_main)
         recyclerView = findViewById(R.id.recycler_view)
         recyclerView.adapter = RecyclerViewAdapter(list24, this)
@@ -51,7 +58,7 @@ class MainActivity : AppCompatActivity(), NewEventDialog.NewEventDialogListener,
         calendarView.setOnDateChangeListener(object : OnDateChangeListener {
             override fun onSelectedDayChange(view: CalendarView, year: Int, month: Int, dayOfMonth: Int) {
                 var eventDateString: String = "Events of the $dayOfMonth"
-                if ((4 <= dayOfMonth && dayOfMonth <= 20) || (24 <= dayOfMonth && dayOfMonth <= 30))
+                if ((dayOfMonth in 4..20) || (dayOfMonth in 24..30))
                     eventDateString += "th"
                 else if (dayOfMonth % 10 == 1) eventDateString += "st"
                 else if (dayOfMonth % 10 == 2) eventDateString += "nd"
@@ -65,6 +72,14 @@ class MainActivity : AppCompatActivity(), NewEventDialog.NewEventDialogListener,
                 } }
                 (recyclerView.adapter as RecyclerViewAdapter).updateList(ourList)
                 (recyclerView.adapter as RecyclerViewAdapter).notifyDataSetChanged()
+                showingFutureEvents = false
+
+                var selectedDateString = "$year-"
+                if (month + 1 < 10) selectedDateString += "0"
+                selectedDateString += "${month + 1}-"
+                if (dayOfMonth < 10) selectedDateString += "0"
+                selectedDateString += "${dayOfMonth}T12:00:00"
+                selectedDate = LocalDateTime.parse(selectedDateString)
             }
         })
 
@@ -91,8 +106,33 @@ class MainActivity : AppCompatActivity(), NewEventDialog.NewEventDialogListener,
                 val newEvent = Event(date, title, description)
                 Toast.makeText(this, newEvent.toString(), Toast.LENGTH_SHORT).show()
                 allEvents.add(newEvent)
+
+                if (showingFutureEvents) {
+                    val futureEventList = arrayListOf<Event>()
+                    for (event in allEvents) {
+                        if (event.date > LocalDateTime.now()) {
+                            futureEventList.add(event)
+                        }
+                    }
+
+                    (recyclerView.adapter as RecyclerViewAdapter).updateList(futureEventList)
+                    (recyclerView.adapter as RecyclerViewAdapter).notifyDataSetChanged()
+                }
+                else if (selectedDate.year == newEvent.date.year && (selectedDate.monthValue == newEvent.date.monthValue) && (selectedDate.dayOfMonth == newEvent.date.dayOfMonth)) {
+                    val selectedDateEventList = arrayListOf<Event>()
+                    for (event in allEvents) {
+                        if (event.date.year == selectedDate.year && event.date.monthValue == selectedDate.monthValue && event.date.dayOfMonth == selectedDate.dayOfMonth) {
+                            selectedDateEventList.add(event)
+                        }
+                    }
+
+                    (recyclerView.adapter as RecyclerViewAdapter).updateList(selectedDateEventList)
+                    (recyclerView.adapter as RecyclerViewAdapter).notifyDataSetChanged()
+                }
+
                 (recyclerView.adapter as RecyclerViewAdapter).notifyDataSetChanged()
                 recyclerView.adapter?.notifyItemInserted(0)
+
             } catch (e: Exception) {
                 Toast.makeText(this, "Something wrong", Toast.LENGTH_SHORT).show()
             }
@@ -103,14 +143,16 @@ class MainActivity : AppCompatActivity(), NewEventDialog.NewEventDialogListener,
 
     @RequiresApi(Build.VERSION_CODES.O)
     fun showFutureEvents(){
-        var listOfFutureEvents = mutableListOf<Event>()
+        val title: TextView = findViewById(R.id.textView)
+        title.text = "Future events"
+
+        val listOfFutureEvents = mutableListOf<Event>()
         allEvents.forEach{ if(it.date > LocalDateTime.now()){
             listOfFutureEvents.add(it)
         } }
         (recyclerView.adapter as RecyclerViewAdapter).updateList(listOfFutureEvents as ArrayList<Event>)
         (recyclerView.adapter as RecyclerViewAdapter).notifyDataSetChanged()
-        var title: TextView = findViewById(R.id.textView)
-        title.text = "Future events"
+        showingFutureEvents = true
     }
 
     override fun onItemClick(position: Int) {

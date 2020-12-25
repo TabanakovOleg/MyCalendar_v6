@@ -25,9 +25,6 @@ class NewEventDialog: AppCompatDialogFragment(), DatePickerDialog.OnDateSetListe
     private lateinit var time: TextView
     private lateinit var button: Button
 
-
-
-
     var day = 0
     var month = 0
     var year = 0
@@ -56,14 +53,11 @@ class NewEventDialog: AppCompatDialogFragment(), DatePickerDialog.OnDateSetListe
 
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
-
-
-
         val builder = AlertDialog.Builder(activity)
         val inflater: LayoutInflater = activity!!.layoutInflater
         val view: View = inflater.inflate(R.layout.new_event_dialog, null)
         builder.setView(view)
-                .setTitle("Triangle")
+                .setTitle("Create new Event")
                 .setNegativeButton(
                         "cancel"
                 ) { dialogInterface, i -> }
