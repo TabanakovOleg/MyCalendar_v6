@@ -102,7 +102,8 @@ class MainActivity : AppCompatActivity(), NewEventDialog.NewEventDialogListener,
     }
 
     fun openEventInformationDialog(pickedEvent: Event){
-        Toast.makeText(this,"Item ${pickedEvent.title} clicked", Toast.LENGTH_LONG).show()
+        val eventInformationDialog = EventInformationDialog(pickedEvent)
+        eventInformationDialog.show(supportFragmentManager, "Event information dialog")
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
