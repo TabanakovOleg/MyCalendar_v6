@@ -18,7 +18,7 @@ import java.time.LocalDate
 import java.time.LocalDateTime
 import java.util.*
 
-class NewEventDialog: AppCompatDialogFragment(), DatePickerDialog.OnDateSetListener, TimePickerDialog.OnTimeSetListener{
+class NewEventDialog(val selectedDate: LocalDateTime): AppCompatDialogFragment(), DatePickerDialog.OnDateSetListener, TimePickerDialog.OnTimeSetListener{
     private lateinit var title:EditText
     private lateinit var descripton:EditText
     private lateinit var date: TextView
@@ -78,6 +78,7 @@ class NewEventDialog: AppCompatDialogFragment(), DatePickerDialog.OnDateSetListe
                     eventDateString += "$savedMinute:00"
                     val eventDate: LocalDateTime = LocalDateTime.parse(eventDateString)
                     listener.applyNewEvent(eventDate, eventTitle,eventDescription)
+
                 }
 
         button = view.findViewById(R.id.date_picker)

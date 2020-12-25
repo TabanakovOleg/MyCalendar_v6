@@ -95,7 +95,7 @@ class MainActivity : AppCompatActivity(), NewEventDialog.NewEventDialogListener,
     }
 
     fun openDialog(){
-        val newEventDialog = NewEventDialog()
+        val newEventDialog = NewEventDialog(selectedDate)
         newEventDialog.show(supportFragmentManager, "New event")
     }
 
