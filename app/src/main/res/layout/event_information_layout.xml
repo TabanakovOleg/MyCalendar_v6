@@ -1,62 +1,74 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:tools="http://schemas.android.com/tools"
     android:padding="10dp">
 
-
-    <TextView
-        android:id="@+id/day_date"
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/date_content"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+
         android:layout_alignParentStart="true"
         android:layout_alignParentTop="true"
         android:layout_marginStart="16dp"
-        android:layout_marginTop="15dp"
-        android:text="20 December"
-        android:textSize="35sp"
-        tools:ignore="MissingConstraints"
-        tools:layout_editor_absoluteX="16dp"
-        tools:layout_editor_absoluteY="1dp" />
+        android:layout_marginTop="10dp">
 
-    <TextView
-        android:id="@+id/year"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignTop="@+id/day_date"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="0dp"
-        android:layout_toEndOf="@+id/day_date"
-        android:text="2020"
-        android:textSize="18sp"
-        tools:ignore="MissingConstraints"
-        tools:layout_editor_absoluteY="2dp" />
+        <TextView
+            android:id="@+id/day_date"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentTop="true"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="15dp"
+            android:text="20 December"
+            android:textSize="35sp"
+            tools:ignore="MissingConstraints"
+            tools:layout_editor_absoluteX="16dp"
+            tools:layout_editor_absoluteY="1dp" />
 
-    <TextView
-        android:id="@+id/time"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/day_date"
-        android:layout_alignStart="@+id/day_date"
-        android:layout_alignEnd="@+id/day_date"
-        android:layout_marginStart="0dp"
-        android:layout_marginTop="5dp"
-        android:layout_marginEnd="156dp"
-        android:text="20:30"
-        android:textSize="20sp"
-        tools:ignore="MissingConstraints"
-        tools:layout_editor_absoluteX="16dp" />
+        <TextView
+            android:id="@+id/year"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignTop="@+id/day_date"
+            android:layout_marginStart="8dp"
+            android:layout_toEndOf="@+id/day_date"
+            android:text="2020"
+            android:textSize="18sp"
+            app:layout_constraintStart_toEndOf="@+id/day_date"
+            tools:ignore="MissingConstraints"
+            tools:layout_editor_absoluteY="1dp" />
+
+        <TextView
+            android:id="@+id/time"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/day_date"
+            android:layout_alignStart="@+id/day_date"
+            android:layout_alignEnd="@+id/day_date"
+            android:layout_marginTop="5dp"
+            android:text="20:30"
+            android:textSize="20sp"
+            app:layout_constraintTop_toBottomOf="@+id/day_date"
+            tools:ignore="MissingConstraints"
+            tools:layout_editor_absoluteX="16dp" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
 
     <EditText
         android:id="@+id/title"
         android:layout_width="326dp"
         android:layout_height="43dp"
-        android:layout_below="@+id/time"
+        android:layout_below="@+id/date_content"
         android:layout_alignParentStart="true"
         android:layout_marginStart="16dp"
         android:layout_marginTop="10dp"
         android:hint="Title"
+        android:textColor="@color/black"
         tools:ignore="MissingConstraints"
         tools:layout_editor_absoluteX="16dp" />
 
@@ -69,18 +81,19 @@
         android:layout_marginStart="16dp"
         android:layout_marginTop="5dp"
         android:hint="Description"
+        android:textColor="@color/black"
         tools:ignore="MissingConstraints"
         tools:layout_editor_absoluteX="16dp" />
 
 
     <Button
-        android:id="@+id/button"
+        android:id="@+id/cancel_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@+id/description"
         android:layout_alignParentStart="true"
         android:layout_marginStart="55dp"
-        android:layout_marginTop="10dp"
+        android:layout_marginTop="20dp"
         android:text="Cancel"
         tools:ignore="MissingConstraints" />
 
@@ -90,20 +103,20 @@
         android:layout_height="48dp"
         android:layout_below="@+id/description"
         android:layout_alignParentEnd="true"
-        android:layout_marginTop="10dp"
+        android:layout_marginTop="20dp"
         android:layout_marginEnd="55dp"
         android:text="Edit"
         tools:ignore="MissingConstraints" />
 
     <Button
-        android:id="@+id/cancel_button"
+        android:id="@+id/delete_button"
         android:layout_width="218dp"
         android:layout_height="46dp"
-        android:layout_below="@+id/button"
-        android:layout_alignStart="@+id/button"
+        android:layout_below="@+id/cancel_button"
+        android:layout_alignStart="@+id/cancel_button"
         android:layout_alignEnd="@+id/edit_button"
         android:layout_marginStart="0dp"
-        android:layout_marginTop="15dp"
+        android:layout_marginTop="8dp"
         android:layout_marginEnd="0dp"
         android:text="Delete"
         android:visibility="invisible" />

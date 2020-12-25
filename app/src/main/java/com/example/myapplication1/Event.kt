@@ -5,7 +5,7 @@ import java.time.LocalDate
 import java.time.LocalDateTime
 
 
-class Event(val date: LocalDateTime, val title: String, val description:String): Comparable<Event> {
+class Event(var date: LocalDateTime, var title: String, var description:String): Comparable<Event> {
     @RequiresApi(Build.VERSION_CODES.O)
     override fun toString(): String {
         return "${date.year}/${date.monthValue}/${date.dayOfMonth} ${date.hour}:${date.minute}: $title \n"

@@ -20,6 +20,10 @@ import java.time.LocalDateTime
 import java.util.*
 import kotlin.collections.ArrayList
 
+var currentYear = 0
+var currentMonth = 0
+var currentDay = 0
+
 
 lateinit var recyclerView: RecyclerView
 
@@ -46,7 +50,6 @@ class MainActivity : AppCompatActivity(), NewEventDialog.NewEventDialogListener,
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
         setContentView(R.layout.activity_main)
         recyclerView = findViewById(R.id.recycler_view)
         recyclerView.adapter = RecyclerViewAdapter(list24, this)
@@ -58,6 +61,9 @@ class MainActivity : AppCompatActivity(), NewEventDialog.NewEventDialogListener,
 
         calendarView.setOnDateChangeListener(object : OnDateChangeListener {
             override fun onSelectedDayChange(view: CalendarView, year: Int, month: Int, dayOfMonth: Int) {
+                currentYear = year
+                currentMonth = month
+                currentDay = dayOfMonth
                 var eventDateString: String = "Events of the $dayOfMonth"
                 if ((dayOfMonth in 4..20) || (dayOfMonth in 24..30))
                     eventDateString += "th"
@@ -99,11 +105,15 @@ class MainActivity : AppCompatActivity(), NewEventDialog.NewEventDialogListener,
     fun openDialog(){
         val newEventDialog = NewEventDialog(selectedDate)
         newEventDialog.show(supportFragmentManager, "New event")
+
     }
 
-    fun openEventInformationDialog(pickedEvent: Event){
-        val eventInformationDialog = EventInformationDialog(pickedEvent)
+    @RequiresApi(Build.VERSION_CODES.O)
+    fun openEventInformationDialog(pickedEvent: Event, position: Int){
+        val eventInformationDialog = EventInformationDialog(pickedEvent, position)
         eventInformationDialog.show(supportFragmentManager, "Event information dialog")
+
+
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
@@ -162,10 +172,11 @@ class MainActivity : AppCompatActivity(), NewEventDialog.NewEventDialogListener,
         showingFutureEvents = true
     }
 
+    @RequiresApi(Build.VERSION_CODES.O)
     override fun onItemClick(position: Int) {
 
-        openEventInformationDialog((recyclerView.adapter as RecyclerViewAdapter).getItem(position))
+        openEventInformationDialog((recyclerView.adapter as RecyclerViewAdapter).getItem(position), position)
 
-        Toast.makeText(this,"Item $position clicked", Toast.LENGTH_LONG).show()
+
     }
 }
