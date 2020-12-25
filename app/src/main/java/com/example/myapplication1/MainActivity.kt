@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.widget.Button
 import android.widget.CalendarView
 import android.widget.CalendarView.OnDateChangeListener
+import android.widget.TextView
 import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
@@ -46,6 +47,7 @@ class MainActivity : AppCompatActivity(), NewEventDialog.NewEventDialogListener,
         recyclerView.setHasFixedSize(true)
 
         calendarView = findViewById(R.id.calendarView)
+        showFutureEvents()
 
         calendarView.setOnDateChangeListener(object : OnDateChangeListener {
             override fun onSelectedDayChange(view: CalendarView, year: Int, month: Int, dayOfMonth: Int) {
@@ -66,6 +68,7 @@ class MainActivity : AppCompatActivity(), NewEventDialog.NewEventDialogListener,
         var showFutureEvents: Button = findViewById(R.id.show_all_events)
         showFutureEvents.setOnClickListener{
             showFutureEvents()
+
         }
     }
 
@@ -82,7 +85,7 @@ class MainActivity : AppCompatActivity(), NewEventDialog.NewEventDialogListener,
                 Toast.makeText(this, newEvent.toString(), Toast.LENGTH_SHORT).show()
                 allEvents.add(newEvent)
                 (recyclerView.adapter as RecyclerViewAdapter).notifyDataSetChanged()
-//                recyclerView.adapter?.notifyItemInserted(0)
+                recyclerView.adapter?.notifyItemInserted(0)
             } catch (e: Exception) {
                 Toast.makeText(this, "Something wrong", Toast.LENGTH_SHORT).show()
             }
@@ -99,6 +102,8 @@ class MainActivity : AppCompatActivity(), NewEventDialog.NewEventDialogListener,
         } }
         (recyclerView.adapter as RecyclerViewAdapter).updateList(listOfFutureEvents as ArrayList<Event>)
         (recyclerView.adapter as RecyclerViewAdapter).notifyDataSetChanged()
+        var title: TextView = findViewById(R.id.textView)
+        title.text = "Future events"
     }
 
     override fun onItemClick(position: Int) {
