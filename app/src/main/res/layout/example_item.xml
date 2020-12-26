@@ -14,14 +14,40 @@
 
 
         <TextView
-            android:id = "@+id/text_view_1"
+            android:id="@+id/time"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text = "Figure 1"
+            android:layout_below="@id/day_and_month"
+            android:layout_alignParentEnd="true"
+            android:layout_marginLeft="18dp"
+            android:layout_marginEnd="26dp"
+            android:text="12:00"
+            android:textColor="@color/gray"
+            android:textSize="12dp"
+            android:textStyle="bold"></TextView>
+
+        <TextView
+            android:id="@+id/day_and_month"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_marginEnd="5dp"
+            android:text="23 December"
+            android:textColor="@color/gray"
+            android:textSize="12dp"
+            android:textStyle="bold"></TextView>
+
+        <TextView
+            android:id="@+id/text_view_1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="8dp"
+            android:text="Figure 1"
+
             android:textColor="@color/black"
-            android:textSize="14dp"
-            android:textStyle="bold">
-        </TextView>
+            android:textSize="16dp"
+            android:textStyle="bold"></TextView>
 
         <!--<TextView
             android:id="@+id/text_view_2"
