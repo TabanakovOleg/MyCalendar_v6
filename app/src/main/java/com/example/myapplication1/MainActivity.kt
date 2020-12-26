@@ -64,6 +64,13 @@ class MainActivity : AppCompatActivity(),
 
         calendarView = findViewById(R.id.calendarView)
 
+
+        /*---------------------------------------------------------------//
+
+        Заполнение сета ивентов из файла, если таковой имеется.
+        -Можно вынести в отдельные функции, чтобы не засорять main()
+
+        //---------------------------------------------------------------*/
         var jstring: String
         if(fileExist("1.json")) {
             jstring = load("1.json")
@@ -221,6 +228,11 @@ class MainActivity : AppCompatActivity(),
     }
 
 
+
+
+    //--------Сохранение в файл при закрытии--------//
+
+
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onPause() {
         super.onPause()
@@ -249,6 +261,7 @@ class MainActivity : AppCompatActivity(),
         save("1.json",eventsInJson)
     }
 
+    //--------------------------------------------//
 
     fun save(fileName: String,fileData: String) {
         val file:String = fileName

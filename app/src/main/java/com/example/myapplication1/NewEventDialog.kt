@@ -13,6 +13,7 @@ import android.view.View
 import android.widget.*
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatDialogFragment
+import androidx.constraintlayout.widget.ConstraintLayout
 import java.sql.Time
 import java.time.LocalDate
 import java.time.LocalDateTime
@@ -22,9 +23,9 @@ import java.util.*
 class NewEventDialog(val selectedDate: LocalDateTime): AppCompatDialogFragment(), DatePickerDialog.OnDateSetListener, TimePickerDialog.OnTimeSetListener{
     private lateinit var title:EditText
     private lateinit var descripton:EditText
-    private lateinit var date: TextView
-    private lateinit var time: TextView
-    private lateinit var button: Button
+    private lateinit var dayMonthContent: TextView
+    private lateinit var yearContent: TextView
+    private lateinit var timeContent: TextView
 
     var hour = 0
     var minute = 0
@@ -86,18 +87,17 @@ class NewEventDialog(val selectedDate: LocalDateTime): AppCompatDialogFragment()
                     listener.applyNewEvent(eventDate, eventTitle,eventDescription)
                 }
 
-        button = view.findViewById(R.id.date_picker)
-        button.setOnClickListener{
+        val dateContent: ConstraintLayout = view.findViewById(R.id.date_content)
+        dateContent.setOnClickListener{
             DatePickerDialog(this.context!!,this, selectedDate.year, selectedDate.monthValue - 1, selectedDate.dayOfMonth).show()
         }
+
         title = view.findViewById(R.id.title)
         descripton = view.findViewById(R.id.description)
-        date = view.findViewById(R.id.picked_date)
-        time = view.findViewById(R.id.picked_time)
-
-        val dateText: String = selectedDate.format(DateTimeFormatter.ofPattern("yyyy/MM/dd"))
-        date.text = dateText
-
+        dayMonthContent = view.findViewById(R.id.day_date)
+        yearContent = view.findViewById(R.id.year)
+        timeContent = view.findViewById(R.id.time)
+        dayMonthContent.text = selectedDate.dayOfMonth.toString()+" "+selectedDate.month.toString()
         return  builder.create()
     }
 
@@ -126,19 +126,14 @@ class NewEventDialog(val selectedDate: LocalDateTime): AppCompatDialogFragment()
         savedHour = hourOfDay
         savedMinute = minute
 
-        var dateText = "Date: $savedYear/"
-        if (savedMonth < 9) dateText += "0"
-        dateText += "${savedMonth + 1}/"
-        if (savedDay < 10) dateText += "0"
-        dateText += savedDay
-        date.text = dateText
-
-
-        var timeText = "Begin at: "
+        dayMonthContent.text = savedDay.toString() + " " + getMonthName(savedMonth)
+        yearContent.text = savedYear.toString()
+        var timeText = ""
         if (savedHour < 10) timeText += "0"
         timeText += "$savedHour:"
+
         if (savedMinute < 10) timeText += "0"
         timeText += "$savedMinute"
-        time.text = timeText
+        timeContent.text = timeText
     }
 }
