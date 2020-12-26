@@ -182,7 +182,7 @@ class MainActivity : AppCompatActivity(),
                     (recyclerView.adapter as RecyclerViewAdapter).notifyDataSetChanged()
                 }
                 // Случай, когда мы добавили событие в отображаемый сейчас день
-                else if (areSameDays(selectedDate, newEvent.date)) {
+                else if (!displayingFutureEvents && areSameDays(selectedDate, newEvent.date)) {
                     val selectedDateEventList = arrayListOf<Event>()
                     for (event in allEvents.toSortedSet()) {
                         if (areSameDays(selectedDate, event.date)) {
