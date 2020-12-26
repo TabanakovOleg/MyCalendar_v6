@@ -22,6 +22,7 @@ import java.io.FileInputStream
 import java.io.FileOutputStream
 import java.io.InputStreamReader
 import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
 import java.util.*
 
 var currentYear = 0
@@ -209,7 +210,7 @@ class MainActivity : AppCompatActivity(),
     @RequiresApi(Build.VERSION_CODES.O)
     fun showFutureEvents(){
         val title: TextView = findViewById(R.id.textView)
-        title.text = "Future text"
+        title.text = "Future events"
 
         val futureEventList = arrayListOf<Event>()
         for (event in allEvents.toSortedSet()) {
