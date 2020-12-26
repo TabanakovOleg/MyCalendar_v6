@@ -25,15 +25,19 @@
         app:rippleColor="#F4F4F4"
         android:layout_alignParentRight="true" />
 
-    <com.google.android.material.button.MaterialButton
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/fab_future_event"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/show_all_events"
-        android:text="Show future events"
+        android:layout_alignParentEnd="true"
         android:layout_alignParentBottom="true"
-        android:layout_marginRight="-7dp"
-        android:layout_marginBottom="15dp"
-        android:layout_toLeftOf="@id/fab_add" />
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginBottom="85dp"
+        android:src="@drawable/calendar"
+        app:rippleColor="#F4F4F4"
+        android:layout_alignParentRight="true" />
 
     <CalendarView
         android:id="@+id/calendarView"
@@ -58,7 +62,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_below="@id/textView"
-        android:layout_marginTop="1dp"
+        android:layout_marginTop="2dp"
         android:clipToPadding="false"
         android:padding="4dp"
         tools:listitem="@layout/example_item" />

@@ -136,7 +136,7 @@ class MainActivity : AppCompatActivity(),
             openDialog()
         }
 
-        val showFutureEvents: Button = findViewById(R.id.show_all_events)
+        val showFutureEvents: FloatingActionButton = findViewById(R.id.fab_future_event)
         showFutureEvents.setOnClickListener{
             showFutureEvents()
         }
