@@ -21,6 +21,8 @@ var currentMonth = 0
 var currentDay = 0
 
 lateinit var recyclerView: RecyclerView
+// Список, в который будут собираться события, «принадлежащие» выбранной дате
+val displayList = arrayListOf<Event>()
 
 class MainActivity : AppCompatActivity(),
                      NewEventDialog.NewEventDialogListener,
@@ -30,8 +32,7 @@ class MainActivity : AppCompatActivity(),
     lateinit var calendarView: CalendarView
 
     // allEvents -- остортированный по дате набор всех событий
-    val allEvents = sortedSetOf<Event>()
-
+    val allEvents = mutableSetOf<Event>()
     /* Костыли
      * selectedDate -- значение выбранной в данный момент на календаре даты
      * displayingFutureEvent -- булева переменная, означающая, содержатся ли
@@ -77,11 +78,9 @@ class MainActivity : AppCompatActivity(),
                 // Элемент, который отображает текст над списком событий
                 val title: TextView = findViewById(R.id.textView)
                 title.text = eventDateString
+                displayList.clear()
 
-                // Список, в который будут собираться события, «принадлежащие» выбранной дате
-                val displayList = arrayListOf<Event>()
-
-                for (event in allEvents) {
+                for (event in allEvents.toSortedSet()) {
                     if ((event.date.year       == year) &&
                         (event.date.monthValue == month + 1) &&
                         (event.date.dayOfMonth == dayOfMonth)) {
@@ -118,7 +117,7 @@ class MainActivity : AppCompatActivity(),
 
     @RequiresApi(Build.VERSION_CODES.O)
     fun openEventInformationDialog(pickedEvent: Event, position: Int){
-        val eventInformationDialog = EventInformationDialog(pickedEvent, position)
+        val eventInformationDialog = EventInformationDialog(pickedEvent, position, displayList, allEvents, displayingFutureEvents)
         eventInformationDialog.show(supportFragmentManager, "Event information dialog")
     }
 
@@ -135,7 +134,7 @@ class MainActivity : AppCompatActivity(),
                 // Случай, когда мы доавили будущее событие, а сейчас отображается список будущих
                 if (displayingFutureEvents && newEvent.date > LocalDateTime.now()) {
                     val futureEventList = arrayListOf<Event>()
-                    for (event in allEvents) {
+                    for (event in allEvents.toSortedSet()) {
                         if (event.date > LocalDateTime.now()) {
                             futureEventList.add(event)
                         }
@@ -147,7 +146,7 @@ class MainActivity : AppCompatActivity(),
                 // Случай, когда мы добавили событие в отображаемый сейчас день
                 else if (areSameDays(selectedDate, newEvent.date)) {
                     val selectedDateEventList = arrayListOf<Event>()
-                    for (event in allEvents) {
+                    for (event in allEvents.toSortedSet()) {
                         if (areSameDays(selectedDate, event.date)) {
                             selectedDateEventList.add(event)
                         }
@@ -175,7 +174,7 @@ class MainActivity : AppCompatActivity(),
         title.text = "Future text"
 
         val futureEventList = arrayListOf<Event>()
-        for (event in allEvents) {
+        for (event in allEvents.toSortedSet()) {
             if (event.date > LocalDateTime.now()) futureEventList.add(event)
         }
 
