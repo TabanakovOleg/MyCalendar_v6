@@ -65,7 +65,8 @@ class EventInformationDialog (val pickedEvent: Event, val position: Int):  AppCo
 
         val selectedDate: LocalDateTime = pickedEvent.date
         dateContent.setOnClickListener(){
-            DatePickerDialog(this.context!!,this, selectedDate.year, selectedDate.monthValue - 1, selectedDate.dayOfMonth).show()
+            DatePickerDialog(this.context!!,this, selectedDate.year,
+                      selectedDate.monthValue - 1, selectedDate.dayOfMonth).show()
         }
 
         cancelBtn.setOnClickListener(){
@@ -85,8 +86,6 @@ class EventInformationDialog (val pickedEvent: Event, val position: Int):  AppCo
         }
 
         return builder.create()
-
-
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
