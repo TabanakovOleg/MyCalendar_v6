@@ -5,13 +5,13 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.os.Build
 import android.os.Bundle
-import android.widget.Button
-import android.widget.CalendarView
+import android.view.View
+import android.widget.*
+import android.widget.CalendarView.INVISIBLE
 import android.widget.CalendarView.OnDateChangeListener
-import android.widget.TextView
-import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.isVisible
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.floatingactionbutton.FloatingActionButton
@@ -31,6 +31,7 @@ var currentDay = 0
 lateinit var recyclerView: RecyclerView
 // Список, в который будут собираться события, «принадлежащие» выбранной дате
 val displayList = arrayListOf<Event>()
+lateinit var calendarImage: ImageView
 
 class MainActivity : AppCompatActivity(),
                      NewEventDialog.NewEventDialogListener,
@@ -93,10 +94,10 @@ class MainActivity : AppCompatActivity(),
             // Функция, вызываемая при изменении выбранной пользователем даты
             override fun onSelectedDayChange(view: CalendarView,
                                              year: Int, month: Int, dayOfMonth: Int) {
+
                 currentYear = year
                 currentMonth = month
                 currentDay = dayOfMonth
-
                 /* Сборка строки (eventDateString), которая будет отображать текущую выбранную дату
                    над списком событий с добавлением погрядковых суффиксов */
                 var eventDateString: String = "Events of the $dayOfMonth"
@@ -138,6 +139,7 @@ class MainActivity : AppCompatActivity(),
 
         val showFutureEvents: FloatingActionButton = findViewById(R.id.fab_future_event)
         showFutureEvents.setOnClickListener{
+            calendarImage.visibility = View.VISIBLE
             showFutureEvents()
         }
     }

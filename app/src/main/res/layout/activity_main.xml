@@ -67,5 +67,15 @@
         android:padding="4dp"
         tools:listitem="@layout/example_item" />
 
+    <ImageView
+        android:id="@+id/imageView"
+        android:layout_width="30dp"
+        android:layout_height="24dp"
+        android:layout_alignTop="@+id/textView"
+        android:layout_marginStart="7dp"
+        android:layout_marginTop="0dp"
+        android:layout_toEndOf="@+id/textView"
+        app:srcCompat="@drawable/calendar" />
+
 
 </RelativeLayout>
