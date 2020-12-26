@@ -2,6 +2,7 @@ package com.example.myapplication1
 
 import Event
 import android.annotation.SuppressLint
+import android.content.Context
 import android.os.Build
 import android.os.Bundle
 import android.widget.Button
@@ -14,7 +15,14 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.floatingactionbutton.FloatingActionButton
+import com.google.gson.GsonBuilder
+import com.google.gson.reflect.TypeToken
+import java.io.BufferedReader
+import java.io.FileInputStream
+import java.io.FileOutputStream
+import java.io.InputStreamReader
 import java.time.LocalDateTime
+import java.util.*
 
 var currentYear = 0
 var currentMonth = 0
@@ -32,7 +40,7 @@ class MainActivity : AppCompatActivity(),
     lateinit var calendarView: CalendarView
 
     // allEvents -- остортированный по дате набор всех событий
-    val allEvents = mutableSetOf<Event>()
+    var allEvents = mutableSetOf<Event>()
     /* Костыли
      * selectedDate -- значение выбранной в данный момент на календаре даты
      * displayingFutureEvent -- булева переменная, означающая, содержатся ли
@@ -55,7 +63,24 @@ class MainActivity : AppCompatActivity(),
         recyclerView.setHasFixedSize(true)
 
         calendarView = findViewById(R.id.calendarView)
+
+        var jstring: String
+        if(fileExist("1.json")) {
+            jstring = load("1.json")
+
+            val gson = GsonBuilder().registerTypeAdapter(LocalDateTime::class.java, LocalDateTimeAdapter()).create()
+            val eventSortedSetTypeToken = object : TypeToken<MutableSet<Event>>() {}.type
+
+            try {
+               allEvents = gson.fromJson(jstring, eventSortedSetTypeToken)
+            } catch (e: Exception) {
+                mutableSetOf<Event>()
+            }
+        }
+
         showFutureEvents()
+
+
 
         calendarView.setOnDateChangeListener(object : OnDateChangeListener {
             // Функция, вызываемая при изменении выбранной пользователем даты
@@ -108,6 +133,12 @@ class MainActivity : AppCompatActivity(),
         showFutureEvents.setOnClickListener{
             showFutureEvents()
         }
+    }
+
+
+    fun fileExist(fname: String?): Boolean {
+        val file = baseContext.getFileStreamPath(fname)
+        return file.exists()
     }
 
     fun openDialog(){
@@ -187,5 +218,58 @@ class MainActivity : AppCompatActivity(),
     override fun onItemClick(position: Int) {
         openEventInformationDialog((recyclerView.adapter as RecyclerViewAdapter).getItem(position),
                                     position)
+    }
+
+
+    @RequiresApi(Build.VERSION_CODES.O)
+    override fun onPause() {
+        super.onPause()
+        if(isFinishing()){
+            val gson = GsonBuilder().registerTypeAdapter(LocalDateTime::class.java, LocalDateTimeAdapter()).create()
+            val eventSortedSetTypeToken = object: TypeToken<SortedSet<Event>>() {}.type
+            val eventsInJson = gson.toJson(allEvents, eventSortedSetTypeToken)
+            save("1.json",eventsInJson)
+        }
+    }
+
+    @RequiresApi(Build.VERSION_CODES.O)
+    override fun onWindowFocusChanged(hasFocus: Boolean) {
+        val gson = GsonBuilder().registerTypeAdapter(LocalDateTime::class.java, LocalDateTimeAdapter()).create()
+        val eventSortedSetTypeToken = object: TypeToken<SortedSet<Event>>() {}.type
+        val eventsInJson = gson.toJson(allEvents, eventSortedSetTypeToken)
+        save("1.json",eventsInJson)
+    }
+
+    @RequiresApi(Build.VERSION_CODES.O)
+    override fun onDestroy() {
+        super.onDestroy()
+        val gson = GsonBuilder().registerTypeAdapter(LocalDateTime::class.java, LocalDateTimeAdapter()).create()
+        val eventSortedSetTypeToken = object: TypeToken<SortedSet<Event>>() {}.type
+        val eventsInJson = gson.toJson(allEvents, eventSortedSetTypeToken)
+        save("1.json",eventsInJson)
+    }
+
+
+    fun save(fileName: String,fileData: String) {
+        val file:String = fileName
+        val data:String = fileData
+        val fileOutputStream: FileOutputStream
+        try {
+            fileOutputStream = openFileOutput(file, Context.MODE_PRIVATE)
+            fileOutputStream.write(data.toByteArray())
+        }catch (e: Exception){
+            e.printStackTrace()
+        }
+    }
+
+    fun load(filename: String): String {
+        var fileInputStream: FileInputStream? = null
+        fileInputStream = openFileInput(filename)
+        var inputStreamReader: InputStreamReader = InputStreamReader(fileInputStream)
+        val bufferedReader: BufferedReader = BufferedReader(inputStreamReader)
+        val stringBuilder: StringBuilder = StringBuilder()
+        var text: String? = ""
+        text = bufferedReader.readLine();
+        return text.toString()
     }
 }
