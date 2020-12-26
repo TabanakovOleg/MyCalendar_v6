@@ -22,27 +22,12 @@ class LocalDateTimeAdapter: JsonSerializer<LocalDateTime>, JsonDeserializer<Loca
     override fun deserialize(json: JsonElement, typeOfT: Type, context: JsonDeserializationContext): LocalDateTime {
         val jsonObject: JsonObject = json.asJsonObject
 
-        var dateString = ""
-
         val year: Int = jsonObject.get("year").asInt
-        dateString += "$year-"
-
         val month: Int = jsonObject.get("month").asInt
-        if (month < 10) dateString += "0"
-        dateString += "$month-"
-
         val day: Int = jsonObject.get("day").asInt
-        if (day < 10) dateString += "0"
-        dateString += "${day}T"
-
         val hour: Int = jsonObject.get("hour").asInt
-        if (hour < 10) dateString += "0"
-        dateString += "$hour:"
-
         val minute: Int = jsonObject.get("minute").asInt
-        if (minute < 10) dateString += "0"
-        dateString += "$minute:00"
 
-        return  LocalDateTime.parse(dateString)
+        return  LocalDateTime.parse(buildDateString(year, month, day, hour, minute))
     }
 }
