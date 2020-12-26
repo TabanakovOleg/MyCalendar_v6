@@ -19,14 +19,19 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import java.lang.StringBuilder
 import java.time.LocalDateTime
 import java.util.*
+import kotlin.collections.ArrayList
 
 
-class EventInformationDialog (val pickedEvent: Event, val position: Int):  AppCompatDialogFragment(), DatePickerDialog.OnDateSetListener, TimePickerDialog.OnTimeSetListener{
+class EventInformationDialog (val pickedEvent: Event,
+                              val position: Int,
+                              var displayList: ArrayList<Event>,
+                              var allEvents: MutableSet<Event>,
+                              var displayingFutureEvents: Boolean) :  AppCompatDialogFragment(), DatePickerDialog.OnDateSetListener, TimePickerDialog.OnTimeSetListener{
 
     @RequiresApi(Build.VERSION_CODES.O)
     var newYear = pickedEvent.date.year
     @RequiresApi(Build.VERSION_CODES.O)
-    var newMonth = pickedEvent.date.monthValue
+    var newMonth = pickedEvent.date.monthValue-1
     @RequiresApi(Build.VERSION_CODES.O)
     var newDay = pickedEvent.date.dayOfMonth
     @RequiresApi(Build.VERSION_CODES.O)
@@ -67,6 +72,32 @@ class EventInformationDialog (val pickedEvent: Event, val position: Int):  AppCo
         dateContent.setOnClickListener(){
             DatePickerDialog(this.context!!,this, selectedDate.year,
                       selectedDate.monthValue - 1, selectedDate.dayOfMonth).show()
+        }
+
+
+        deleteBtn.setOnClickListener(){
+            allEvents.remove(pickedEvent)
+            displayList.clear()
+            if(displayingFutureEvents)
+            {
+                allEvents.toSortedSet().forEach{ if(it.date > LocalDateTime.now())
+                        {displayList.add(it)}
+                }
+
+                (recyclerView.adapter as RecyclerViewAdapter).updateList(displayList)
+
+                (recyclerView.adapter as RecyclerViewAdapter).notifyDataSetChanged()
+            }
+            else{
+                allEvents.toSortedSet().forEach{ if(it.date.year == currentYear && it.date.monthValue - 1 == currentMonth && it.date.dayOfMonth == currentDay){
+                    displayList.add(it)
+                } }
+                (recyclerView.adapter as RecyclerViewAdapter).updateList(displayList)
+
+                (recyclerView.adapter as RecyclerViewAdapter).notifyDataSetChanged()
+            }
+
+            this.dismiss()
         }
 
         cancelBtn.setOnClickListener(){
@@ -113,14 +144,30 @@ class EventInformationDialog (val pickedEvent: Event, val position: Int):  AppCo
         description.isEnabled = false
         deleteBtn.visibility = View.INVISIBLE
         editBtn.text = "Edit"
-        pickedEvent.date = LocalDateTime.parse("$newYear-${newMonth+1}-${newDay}T${time.text}")
+        pickedEvent.date = LocalDateTime.parse(buildDateString(newYear,newMonth+1,newDay, newHour, newMinute))
+        //ickedEvent.date = LocalDateTime.parse("$newYear-${newMonth+1}-${newDay}T${time.text}")
         pickedEvent.title = title.text.toString()
         pickedEvent.description = description.text.toString()
 
-        (recyclerView.adapter as RecyclerViewAdapter).notifyDataSetChanged()
-        (recyclerView.adapter as RecyclerViewAdapter).notifyItemChanged(position)
-        editBtn.setOnClickListener(){
-            editModeOn(dateContent, title, description, it as Button, deleteBtn)
+        displayList.clear()
+
+        if(displayingFutureEvents)
+        {
+            allEvents.toSortedSet().forEach{ if(it.date > LocalDateTime.now())
+            {displayList.add(it)}
+            }
+
+            (recyclerView.adapter as RecyclerViewAdapter).updateList(displayList)
+
+            (recyclerView.adapter as RecyclerViewAdapter).notifyDataSetChanged()
+        }
+        else{
+            allEvents.toSortedSet().forEach{ if(it.date.year == currentYear && it.date.monthValue - 1 == currentMonth && it.date.dayOfMonth == currentDay){
+                displayList.add(it)
+            } }
+            (recyclerView.adapter as RecyclerViewAdapter).updateList(displayList)
+
+            (recyclerView.adapter as RecyclerViewAdapter).notifyDataSetChanged()
         }
     }
 
